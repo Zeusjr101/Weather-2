@@ -1,0 +1,45 @@
+.title{
+    text-align: center;
+    border: 5px solid black;
+    background-color: teal;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 35px;
+    margin-bottom: 20px;
+}
+
+.col-left{
+float: left;
+font-size: 25px;
+margin-left: 18px;
+border: 2px solid black;
+   
+}
+.col-mid{
+    border: 2px solid blue;
+    text-align: center;
+    width: 200%;
+    margin-left: 100%;
+    height: 209px;
+  
+}
+.col-center{
+    border: 2px solid blue;
+    text-align: center;
+    width: 200%;
+    margin-left: 100%;
+    height: 209px;
+  
+}
+.form{
+    margin-bottom: 146px;
+    margin-left: 16px;float: left;
+    margin-right: 249px;
+    border: 2px solid black;
+    height: 300px;
+    width: 289px;
+}
+.bttn{
+    width: fit-content;
+    
+}
