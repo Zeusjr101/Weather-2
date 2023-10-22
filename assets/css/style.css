@@ -39,7 +39,15 @@ border: 2px solid black;
     height: 300px;
     width: 289px;
 }
-.bttn{
-    width: fit-content;
-    
+.btn{
+  width: 32%;
+  border-color: lightgrey;
+  border-width: thin;
+}
+.search-input{
+    width: 56%;
+    border-color: lightgrey;
+}
+.weather-card{
+    display: flex;
 }
