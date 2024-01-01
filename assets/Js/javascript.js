@@ -1,36 +1,85 @@
-<div class="future-card bg-primary rounded">
- <p class="future-date" id="future-date-1"></p>
- <img id="future-icon-1" src="" alt="" />
- <p class="future-temp" id="future-temp-1"></p>
- <p class="future-humidity" id="future-humidity-1"></p>
-</div>
+async function get5DayForecast(city) {
+  const apiKey = "b3e9b8f4b5dfc4b26953d6f528fa8297";
+  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+}
 
-<script>
- // Assuming you have an array of future weather data called 'futureWeatherData'
- for (let i = 0; i < futureWeatherData.length; i++) {
-    // Create a new div element for each future card
-    const futureCard = document.createElement('div');
-    futureCard.classList.add('future-card', 'bg-primary', 'rounded');
+async function singleDayForecast(city) {
+  const apiKey = "b3e9b8f4b5dfc4b26953d6f528fa8297";
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+}
 
-    // Create a new paragraph element for the future date
-    const futureDate = document.createElement('p');
-    futureDate.classList.add('future-date');
-    futureDate.id = 'future-date-' + (i + 2);
-    futureDate.textContent = futureWeatherData[i].date;
+async function setWeatherParameters() {
+  const city = document.getElementById("search-input").value;
 
-    // Create a new img element for the future weather icon
-    const futureIcon = document.createElement('img');
-    futureIcon.id = 'future-icon-' + (i + 2);
-    futureIcon.src = futureWeatherData[i].icon;
-    futureIcon.alt = '';
+  const fiveDayForecast = await get5DayForecast(city);
+  const singleDayForecast = await singleDayForecast(city);
 
-    // Create a new paragraph element for the future temperature
-    const futureTemp = document.createElement('p');
-    futureTemp.classList.add('future-temp');
-    futureTemp.id = 'future-temp-' + (i + 2);
-    futureTemp.textContent = futureWeatherData[i].temp;
+  document.getElementById("current-temp").innerHTML =
+  singleDayForecast.main.temp;
+  document.getElementById("wind").innerHTML = singleDayForecast.wind.speed;
+  document.getElementById("humidity").innerHTML =
+  singleDayForecast.main.humidity;
+  document.getElementById("city").innerHTML = singleDayForecast.name;
 
-    // Create a new paragraph element for the future humidity
-    const futureHumidity = document.createElement('p');
-    futureHumidity.classList.add('future-humidity');
-    futureHumidity.id = 'future-hum
+  document.getElementById("day-1-temp").innerHTML =
+    fiveDayForecast.list[0].main.temp;
+  document.getElementById("day-1-wind").innerHTML =
+    fiveDayForecast.list[0].wind.speed;
+  document.getElementById("day-1-humidity").innerHTML =
+    fiveDayForecast.list[0].main.humidity;
+
+  document.getElementById("day-2-temp").innerHTML = fiveDayForecast[1].main.temp;
+  document.getElementById("day-2-wind").innerHTML = fiveDayForecast[1].temp;
+  document.getElementById("day-2-humidity").innerHTML =
+    fiveDayForecast[1].humidity;
+
+  document.getElementById("day-3-temp").innerHTML = fiveDayForecast[2].temp;
+  document.getElementById("day-3-wind").innerHTML = fiveDayForecast[2].wind;
+  document.getElementById("day-3-humidity").innerHTML =
+    fiveDayForecast[2].humidity;
+
+  document.getElementById("day-4-temp").innerHTML = fiveDayForecast[3].temp;
+  document.getElementById("day-4-wind").innerHTML = fiveDayForecast[3].wind;
+  document.getElementById("day-4-humidity").innerHTML =
+    fiveDayForecast[3].humidity;
+
+  document.getElementById("day-5-temp").innerHTML = fiveDayForecast[4].temp;
+  document.getElementById("day-5-wind").innerHTML = fiveDayForecast[4].wind;
+  document.getElementById("day-5-humidity").innerHTML =
+    fiveDayForecast[4].humidity;
+}
+$(document).ready(function () {
+  var searchBtn = $(".btn-primary");
+  var listBtnContainer = $(".row.btn");
+  var inputEl = $("#search-input");
+
+  searchBtn.on("click", function () {
+    var city = inputEl.val();
+    var cityBtn = $("<button>");
+    cityBtn.addClass("btn btn-secondary btn-block");
+    cityBtn.text(city);
+    listBtnContainer.append(cityBtn);
+    inputEl.val("");
+
+    var pastBtn = $("<button>" + city + "</button>");
+    pastBtn.addClass("past");
+
+    pastBtn.on("click", function () {
+      var city = $(this).text();
+      getWeather(city);
+    });
+    listBtnContainer.append(pastBtn);
+
+    // const apiKey = "b3e9b8f4b5dfc4b26953d6f528fa8297";
+    // var currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+    // var forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial`;
+
+    setWeatherParameters(city);
+  });
+});
