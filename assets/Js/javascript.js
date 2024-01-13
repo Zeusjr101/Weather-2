@@ -1,85 +1,55 @@
-async function get5DayForecast(city) {
-  const apiKey = "b3e9b8f4b5dfc4b26953d6f528fa8297";
-  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial`;
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
+
+function searchWeather() {
+  const apiKey = 'b3e9b8f4b5dfc4b26953d6f528fa8297';
+  const cityName = document.getElementById('search-input').value;
+
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`)
+    .then(response => response.json())
+    .then(data => {
+      updateCurrentWeather(data);
+    })
+    .catch(error => console.error('Error fetching current weather:', error));
+
+  fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}`)
+    .then(response => response.json())
+    .then(data => {
+      updateForecast(data);
+    })
+    .catch(error => console.error('Error fetching forecast:', error));
 }
 
-async function singleDayForecast(city) {
-  const apiKey = "b3e9b8f4b5dfc4b26953d6f528fa8297";
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
+function updateCurrentWeather(data) {
+  const cityNameElement = document.getElementById('city-name');
+  const tempElement = document.getElementById('temp');
+  const highElement = document.getElementById('high');
+  const humidityElement = document.getElementById('humidity');
+  const windSpeedElement = document.getElementById('wind-speed');
+
+  cityNameElement.textContent = data.name;
+  tempElement.textContent = `Temperature: ${data.main.temp}℉`;
+  highElement.textContent = `High: ${data.main.temp_max}℉`;
+  humidityElement.textContent = `Humidity: ${data.main.humidity}%`;
+  windSpeedElement.textContent = `Wind Speed: ${data.wind.speed} m/s`;
 }
 
-async function setWeatherParameters() {
-  const city = document.getElementById("search-input").value;
+function updateForecast(data) {
+  const forecastContainer = document.querySelector('.weather-card');
+  forecastContainer.innerHTML = ''; 
 
-  const fiveDayForecast = await get5DayForecast(city);
-  const singleDayForecast = await singleDayForecast(city);
+  for (let i = 0; i < data.list.length; i += 8) {
+    const forecastData = data.list[i];
+    const date = new Date(forecastData.dt * 1000);
 
-  document.getElementById("current-temp").innerHTML =
-  singleDayForecast.main.temp;
-  document.getElementById("wind").innerHTML = singleDayForecast.wind.speed;
-  document.getElementById("humidity").innerHTML =
-  singleDayForecast.main.humidity;
-  document.getElementById("city").innerHTML = singleDayForecast.name;
+    const forecastElement = document.createElement('div');
+    forecastElement.className = 'forecast-item';
+    forecastElement.innerHTML = `
+      <h3>${date.toDateString()}</h3>
+      <p>Temperature: ${forecastData.main.temp}℉</p>
+      <p>High: ${forecastData.main.temp_max}℉</p>
+      <p>Humidity: ${forecastData.main.humidity}%</p>
+      <p>Wind Speed: ${forecastData.wind.speed} m/s</p>
+    `;
 
-  document.getElementById("day-1-temp").innerHTML =
-    fiveDayForecast.list[0].main.temp;
-  document.getElementById("day-1-wind").innerHTML =
-    fiveDayForecast.list[0].wind.speed;
-  document.getElementById("day-1-humidity").innerHTML =
-    fiveDayForecast.list[0].main.humidity;
-
-  document.getElementById("day-2-temp").innerHTML = fiveDayForecast[1].main.temp;
-  document.getElementById("day-2-wind").innerHTML = fiveDayForecast[1].temp;
-  document.getElementById("day-2-humidity").innerHTML =
-    fiveDayForecast[1].humidity;
-
-  document.getElementById("day-3-temp").innerHTML = fiveDayForecast[2].temp;
-  document.getElementById("day-3-wind").innerHTML = fiveDayForecast[2].wind;
-  document.getElementById("day-3-humidity").innerHTML =
-    fiveDayForecast[2].humidity;
-
-  document.getElementById("day-4-temp").innerHTML = fiveDayForecast[3].temp;
-  document.getElementById("day-4-wind").innerHTML = fiveDayForecast[3].wind;
-  document.getElementById("day-4-humidity").innerHTML =
-    fiveDayForecast[3].humidity;
-
-  document.getElementById("day-5-temp").innerHTML = fiveDayForecast[4].temp;
-  document.getElementById("day-5-wind").innerHTML = fiveDayForecast[4].wind;
-  document.getElementById("day-5-humidity").innerHTML =
-    fiveDayForecast[4].humidity;
+    forecastContainer.appendChild(forecastElement);
+  }
 }
-$(document).ready(function () {
-  var searchBtn = $(".btn-primary");
-  var listBtnContainer = $(".row.btn");
-  var inputEl = $("#search-input");
-
-  searchBtn.on("click", function () {
-    var city = inputEl.val();
-    var cityBtn = $("<button>");
-    cityBtn.addClass("btn btn-secondary btn-block");
-    cityBtn.text(city);
-    listBtnContainer.append(cityBtn);
-    inputEl.val("");
-
-    var pastBtn = $("<button>" + city + "</button>");
-    pastBtn.addClass("past");
-
-    pastBtn.on("click", function () {
-      var city = $(this).text();
-      getWeather(city);
-    });
-    listBtnContainer.append(pastBtn);
-
-    // const apiKey = "b3e9b8f4b5dfc4b26953d6f528fa8297";
-    // var currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
-    // var forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial`;
-
-    setWeatherParameters(city);
-  });
-});
