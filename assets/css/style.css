@@ -1,4 +1,6 @@
-
+body{
+    background: cadetblue;
+}
 .title{
     text-align: center;
     border: 5px solid black;
